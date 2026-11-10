@@ -89,6 +89,7 @@ import {
 } from './usageAnalyticsModel';
 import { useUsageAnalytics } from './useUsageAnalytics';
 import { UsageSummarySection } from './components/UsageSummaryCards';
+import { RequestPayloadModal } from '@/components/usage/RequestPayloadModal';
 import {
   buildUsageEntitySummaryCards,
   buildUsageApiKeySummaryCards,
@@ -3658,6 +3659,8 @@ function AnomalyPointsPanel({
 }
 
 function DrilldownPreviewPanel({ rows, locale }: { rows: UsageDrilldownEvent[]; locale: string }) {
+  const [payloadRequestId, setPayloadRequestId] = useState<string | null>(null);
+
   const { t } = useTranslation();
   return (
     <div className={styles.tablePanel}>
@@ -3691,7 +3694,20 @@ function DrilldownPreviewPanel({ rows, locale }: { rows: UsageDrilldownEvent[]; 
               {rows.slice(0, 12).map((row) => (
                 <tr key={row.eventHash}>
                   <td>{formatLocalDateTime(row.timestampMs, locale)}</td>
-                  <td className={styles.monoCell}>{row.requestId || row.eventHash.slice(0, 10)}</td>
+                  <td className={styles.monoCell}>
+                    {row.requestId ? (
+                      <button
+                        type="button"
+                        title={t('usage_analytics.view_payload')}
+                        onClick={() => setPayloadRequestId(row.requestId)}
+                        style={{ all: 'unset', cursor: 'pointer', textDecoration: 'underline' }}
+                      >
+                        {row.requestId}
+                      </button>
+                    ) : (
+                      row.eventHash.slice(0, 10)
+                    )}
+                  </td>
                   <td>{row.model}</td>
                   <td>{row.apiKeyLabel || maskApiKeyHash(row.apiKeyHash)}</td>
                   <td>{compactNumber(row.totalTokens)}</td>
@@ -3712,6 +3728,7 @@ function DrilldownPreviewPanel({ rows, locale }: { rows: UsageDrilldownEvent[]; 
           </table>
         </div>
       )}
+      <RequestPayloadModal requestId={payloadRequestId} onClose={() => setPayloadRequestId(null)} />
     </div>
   );
 }

@@ -27,6 +27,7 @@ import { copyToClipboard } from '@/utils/clipboard';
 import { maskSensitiveText, truncateText } from '@/utils/format';
 import { getPlanLabel, getPlanPresentation, type PlanDisplayMode } from '@/utils/plans';
 import { formatCompactNumber, formatUsd } from '@/utils/usage';
+import { RequestPayloadModal } from '@/components/usage/RequestPayloadModal';
 import styles from '../MonitoringCenterPage.module.scss';
 
 type RealtimeLogRow = MonitoringEventRow & {
@@ -1028,6 +1029,8 @@ export function RealtimeEventsPanel({
   onPageSizeChange,
   onLoadMoreEvents,
 }: RealtimeEventsPanelProps) {
+  const [payloadRequestId, setPayloadRequestId] = useState<string | null>(null);
+
   const tooltipIdPrefix = useId();
   const showNotification = useNotificationStore((state) => state.showNotification);
   const sourceApiKeyLabel = shortLabel(
@@ -1322,6 +1325,16 @@ export function RealtimeEventsPanel({
                     <div className={styles.realtimeTimeCell}>
                       <span className={styles.realtimeTimeLine}>{timeParts.date}</span>
                       <span className={styles.realtimeTimeLine}>{timeParts.time}</span>
+                      {row.requestId ? (
+                        <button
+                          type="button"
+                          title={row.requestId}
+                          onClick={() => setPayloadRequestId(row.requestId ?? null)}
+                          style={{ all: 'unset', cursor: 'pointer', textDecoration: 'underline' }}
+                        >
+                          {t('usage_analytics.view_payload')}
+                        </button>
+                      ) : null}
                     </div>
                   </td>
                   <td>
@@ -1381,6 +1394,10 @@ export function RealtimeEventsPanel({
           ) : null}
         </div>
       ) : null}
+      <RequestPayloadModal
+        requestId={payloadRequestId}
+        onClose={() => setPayloadRequestId(null)}
+      />
     </>
   );
 

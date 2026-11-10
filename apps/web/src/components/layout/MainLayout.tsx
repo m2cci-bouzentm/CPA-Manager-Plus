@@ -57,6 +57,15 @@ import { isSupportedLanguage } from '@/utils/language';
 import type { Theme, VisualEffectsMode } from '@/types';
 
 const SIDEBAR_ICON_SIZE = 20;
+const CLI_PROXY_PANEL_PATHS = [
+  '/config',
+  '/ai-providers',
+  '/plugins',
+  '/plugin-pages',
+  '/accounts',
+  '/oauth',
+  '/logs',
+];
 const GITHUB_REPOSITORY_URL = 'https://github.com/seakee/CPA-Manager-Plus';
 
 const sidebarIcons: Record<string, ReactNode> = {
@@ -204,6 +213,12 @@ const VISUAL_EFFECTS_OPTIONS: Array<{
     icon: headerIcons.visualEffectsReduced,
   },
 ];
+
+function isCliProxyPanelPath(path: string): boolean {
+  return CLI_PROXY_PANEL_PATHS.some(
+    (panelPath) => path === panelPath || path.startsWith(`${panelPath}/`)
+  );
+}
 
 function PluginSidebarIcon({ src }: { src: string }) {
   const [failed, setFailed] = useState(false);
@@ -620,7 +635,9 @@ function MainLayoutContent({ routeBase = '', demoMode = false }: MainLayoutProps
         icon: sidebarIcons.system,
       },
     ],
-  ].filter((section) => section.length > 0);
+  ]
+    .map((section) => section.filter((item) => !isCliProxyPanelPath(item.path)))
+    .filter((section) => section.length > 0);
   const navItems = navSections.flat();
   const navOrder = navItems.map((item) => item.path);
   const getRouteOrder = (pathname: string) => {

@@ -140,6 +140,7 @@ func (tokens *LongContextTokens) AddIfLongContext(input, output, cached, cacheRe
 }
 
 type Detail struct {
+	RequestID             string                  `json:"request_id,omitempty"`
 	Timestamp             string                  `json:"timestamp"`
 	Source                string                  `json:"source"`
 	AuthIndex             string                  `json:"auth_index,omitempty"`
@@ -991,6 +992,7 @@ func BuildPayload(events []Event) Payload {
 			RequestedModel:        requestedModel,
 			ResolvedModel:         event.ResolvedModel,
 			ResponseModel:         event.ResponseModel,
+			RequestID:             event.RequestID,
 			SessionID:             event.SessionID,
 			ParentSessionID:       event.ParentSessionID,
 			AccessTokenSHA256:     event.AccessTokenSHA256,

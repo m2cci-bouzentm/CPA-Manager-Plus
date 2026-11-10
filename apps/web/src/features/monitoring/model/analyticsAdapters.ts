@@ -1086,6 +1086,7 @@ export const buildUsageDetailsFromAnalyticsEvents = (
       requested_model: requestedModel,
       resolved_model: readString(item.resolved_model),
       response_model: readString(item.response_model),
+      request_id: readString(item.request_id),
       session_id: readString(item.session_id),
       parent_session_id: readString(item.parent_session_id),
       access_token_sha256: readString(item.access_token_sha256),

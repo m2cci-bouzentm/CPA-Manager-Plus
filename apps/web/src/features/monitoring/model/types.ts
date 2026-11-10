@@ -161,6 +161,7 @@ export type MonitoringEventRow = {
   requestedModel?: string;
   resolvedModel?: string;
   responseModel?: string;
+  requestId?: string;
   sessionId?: string;
   parentSessionId?: string;
   accessTokenSha256?: string;

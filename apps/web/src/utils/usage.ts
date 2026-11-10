@@ -229,6 +229,7 @@ export interface UsageDetail {
   resolvedModel?: string;
   response_model?: string;
   responseModel?: string;
+  request_id?: string;
   session_id?: string;
   sessionId?: string;
   parent_session_id?: string;
@@ -1149,6 +1150,7 @@ export function collectUsageDetailsWithEndpoint(usageData: unknown): UsageDetail
           header_trace_id: readDetailString(detailRaw.header_trace_id ?? detailRaw.headerTraceId),
           fail_body: readDetailString(detailRaw.fail_body ?? detailRaw.failBody ?? failRaw.body),
           response_model: readDetailString(detailRaw.response_model ?? detailRaw.responseModel),
+          request_id: readDetailString(detailRaw.request_id ?? detailRaw.requestId),
           session_id: readDetailString(detailRaw.session_id ?? detailRaw.sessionId),
           parent_session_id: readDetailString(detailRaw.parent_session_id ?? detailRaw.parentSessionId),
           access_token_sha256: readDetailString(detailRaw.access_token_sha256 ?? detailRaw.accessTokenSHA256 ?? detailRaw.accessTokenSha256),

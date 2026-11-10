@@ -78,7 +78,8 @@ var compatibleUsageDetailQueryPrefix = `select
 		coalesce(parent_session_id, ''),
 		coalesce(access_token_sha256, ''),
 		generate,
-		stream
+		stream,
+		coalesce(request_id, '')
 	from usage_events
 		where id in (`
 
@@ -698,6 +699,7 @@ func scanCompatibleDetail(rows *sql.Rows) (compatibleExportRow, error) {
 		&accessTokenSHA256,
 		&generate,
 		&stream,
+		&detail.RequestID,
 	)
 	if err != nil {
 		return compatibleExportRow{}, err

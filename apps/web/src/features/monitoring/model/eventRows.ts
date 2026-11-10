@@ -127,6 +127,7 @@ export const buildEventRows = (
       const responseModel = readString(
         detail.__responseModel ?? detail.response_model ?? detail.responseModel
       );
+      const requestId = readString(detail.request_id);
       const sessionId = readString(detail.session_id ?? detail.sessionId);
       const parentSessionId = readString(
         detail.parent_session_id ?? detail.parentSessionId
@@ -278,6 +279,7 @@ export const buildEventRows = (
         totalTokens,
         totalCost,
         responseModel,
+        requestId,
         sessionId,
         parentSessionId,
         accessTokenSha256,
