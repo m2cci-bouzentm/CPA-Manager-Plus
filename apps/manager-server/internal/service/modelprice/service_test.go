@@ -140,6 +140,40 @@ func TestDecodeModelsDevCatalogSelectsCanonicalOfficialPrice(t *testing.T) {
 	}
 }
 
+func TestDecodeModelsDevCatalogPricesGatewayPrefixedModelWithManyAggregatorEntries(t *testing.T) {
+	fetched, _, err := decodeModelsDevPriceSource(strings.NewReader(`{
+		"models": {
+			"anthropic/claude-haiku-5-5": {"name":"Claude Haiku 5.5"}
+		},
+		"providers": {
+			"anthropic": {"models": {"claude-haiku-5-5": {"cost":{"input":0.1,"output":0.5,"cache_read":0.01,"cache_write":0.125}}}},
+			"opencode": {"models": {"claude-haiku-5-5": {"cost":{"input":0.1,"output":0.5,"cache_read":0.01,"cache_write":0.125}}}},
+			"aixy": {"models": {"anthropic/claude-haiku-5-5": {"cost":{"input":0.1,"output":0.5}}}},
+			"nearai": {"models": {"anthropic/claude-haiku-5-5": {"cost":{"input":0.1,"output":0.5}}}},
+			"llmgateway-providers": {"models": {"anthropic/claude-haiku-5-5": {"cost":{"input":0.1,"output":0.5}}}},
+			"requesty": {"models": {"claude-haiku-5-5@eu": {"cost":{"input":0.11,"output":0.55}}}},
+			"openrouter": {"models": {"anthropic/claude-haiku-5.5": {"cost":{"input":0.1,"output":0.5}}}},
+			"amazon-bedrock": {"models": {"eu.anthropic.claude-haiku-5-5": {"cost":{"input":0.11,"output":0.55}}}}
+		}
+	}`))
+	if err != nil {
+		t.Fatalf("decode models.dev catalog: %v", err)
+	}
+
+	selection := selectModelPriceCollection(collectionFromFetchedSource(fetched), []string{"claude-haiku-5-5", "cursor/claude-haiku-5-5"})
+	plain, plainOK := selection.Prices["claude-haiku-5-5"]
+	gateway, gatewayOK := selection.Prices["cursor/claude-haiku-5-5"]
+	if !plainOK || !gatewayOK {
+		t.Fatalf("selection = %#v", selection)
+	}
+	if gateway.SourceModelID != "anthropic/claude-haiku-5-5" || gateway.Prompt != plain.Prompt || gateway.Completion != plain.Completion {
+		t.Fatalf("gateway price = %#v, plain price = %#v", gateway, plain)
+	}
+	if len(selection.Candidates) != 0 || len(selection.Unmatched) != 0 {
+		t.Fatalf("selection required confirmation: %#v", selection)
+	}
+}
+
 func TestDecodeModelsDevContextTiersPreservesConfiguredZerosAndIgnoresUnsafeRules(t *testing.T) {
 	prices, skipped, err := decodeModelsDevModelPrices(strings.NewReader(`{
 		"provider-a":{"models":{
