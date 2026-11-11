@@ -19,6 +19,7 @@ import (
 	"github.com/seakee/cpa-manager-plus/apps/manager-server/internal/buildinfo"
 	"github.com/seakee/cpa-manager-plus/apps/manager-server/internal/collector"
 	"github.com/seakee/cpa-manager-plus/apps/manager-server/internal/command/adminreset"
+	"github.com/seakee/cpa-manager-plus/apps/manager-server/internal/command/archiveprojection"
 	"github.com/seakee/cpa-manager-plus/apps/manager-server/internal/command/cpaconnection"
 	"github.com/seakee/cpa-manager-plus/apps/manager-server/internal/command/derivedmaintenance"
 	"github.com/seakee/cpa-manager-plus/apps/manager-server/internal/command/managerdatasnapshot"
@@ -67,6 +68,17 @@ func main() {
 					return
 				}
 				log.Printf("compact usage database: %v", err)
+				os.Exit(1)
+			}
+			return
+		case "repair-archive-projection":
+			ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+			defer stop()
+			if err := archiveprojection.Run(ctx, os.Args[2:], os.Stdout, os.Stderr); err != nil {
+				if archiveprojection.IsHelp(err) {
+					return
+				}
+				log.Printf("repair archive projection: %v", err)
 				os.Exit(1)
 			}
 			return
