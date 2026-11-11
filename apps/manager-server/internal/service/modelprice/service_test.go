@@ -127,6 +127,12 @@ func TestDecodeModelsDevCatalogSelectsCanonicalOfficialPrice(t *testing.T) {
 		t.Fatalf("official selection required confirmation: %#v", selection)
 	}
 
+	gateway := selectModelPriceCollection(collection, []string{"cursor/gpt-5.5"})
+	price, ok = gateway.Prices["cursor/gpt-5.5"]
+	if !ok || price.SourceModelID != "openai/gpt-5.5" || price.Prompt != 1 {
+		t.Fatalf("gateway prefix selection = %#v", gateway)
+	}
+
 	scoped := selectModelPriceCollection(collection, []string{"abacus/gpt-5.5"})
 	price, ok = scoped.Prices["abacus/gpt-5.5"]
 	if !ok || price.SourceModelID != "abacus/gpt-5.5" || price.Prompt != 9 {

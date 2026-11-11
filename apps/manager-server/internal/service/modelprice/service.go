@@ -1324,6 +1324,10 @@ func (matcher *modelPriceMatcher) findAutomaticModelPrice(modelID string) (store
 				if len(directMatches) == 1 {
 					return matcher.entries[directMatches[0]].price, directReason, true, allMatches
 				}
+				_, unprefixedModelID, _ := strings.Cut(modelID, "/")
+				if officialMatches := matcher.modelsDevOfficialMatches(unprefixedModelID); len(officialMatches) == 1 {
+					return matcher.entries[officialMatches[0]].price, "models.dev-official", true, allMatches
+				}
 			}
 			continue
 		}
