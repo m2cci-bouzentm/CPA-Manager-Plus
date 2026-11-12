@@ -515,6 +515,14 @@ export const normalizeConfigResponse = (raw: unknown): Config => {
   if (Array.isArray(apiKeysRaw)) {
     config.apiKeys = apiKeysRaw.map((key) => String(key)).filter((key) => key.trim() !== '');
   }
+  const apiKeyNamesRaw = raw['api-key-names'];
+  if (isRecord(apiKeyNamesRaw)) {
+    config.apiKeyNames = Object.fromEntries(
+      Object.entries(apiKeyNamesRaw).filter(
+        (entry): entry is [string, string] => typeof entry[1] === 'string' && entry[1].trim() !== ''
+      )
+    );
+  }
 
   const geminiList = raw['gemini-api-key'] ?? raw.geminiApiKey ?? raw.geminiApiKeys;
   if (Array.isArray(geminiList)) {

@@ -305,8 +305,11 @@ function DashboardPageContent({ useApiBaseAsCpaBase }: { useApiBaseAsCpaBase: bo
         map.set(hash, alias);
       }
     });
+    Object.entries(config?.apiKeyNames || {}).forEach(([hash, name]) => {
+      map.set(hash.toLowerCase(), name.trim());
+    });
     return map;
-  }, [displayMeta.apiKeyAliases]);
+  }, [config?.apiKeyNames, displayMeta.apiKeyAliases]);
 
   const refreshHealth = useCallback(async () => {
     const requestId = ++healthRequestId.current;
@@ -596,7 +599,11 @@ function DashboardPageContent({ useApiBaseAsCpaBase }: { useApiBaseAsCpaBase: bo
           errorLogsLoaded={errorLogsLoaded}
         />
       </section>
-      {healthMetaError ? <div className="error-box" role="alert">{healthMetaError}</div> : null}
+      {healthMetaError ? (
+        <div className="error-box" role="alert">
+          {healthMetaError}
+        </div>
+      ) : null}
 
       {/* 3. Today's Overview (Metrics Cards) */}
       {usageSummary.enabled && (

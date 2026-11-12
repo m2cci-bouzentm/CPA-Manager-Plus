@@ -556,6 +556,18 @@ describe('buildApiKeyDisplayMap', () => {
     expect(map.get(apiKeyHash)?.label).toContain('**');
     expect(map.get(apiKeyHash)?.label).not.toContain('secret-value');
   });
+
+  it('prefers the name set on the proxy over the stored alias', () => {
+    const apiKey = 'sk-alias-test-key';
+    const apiKeyHash = sha256Hex(apiKey);
+    const map = buildApiKeyDisplayMap([apiKey], [{ apiKeyHash, alias: 'Team A', updatedAtMs: 1 }], {
+      [apiKeyHash]: 'Mac CC Key',
+    });
+
+    expect(map.get(apiKeyHash)?.label).toBe('Mac CC Key');
+    expect(map.get(apiKeyHash)?.masked).toMatch(/^sk/);
+    expect(map.get(apiKeyHash)?.copyValue).toBe(apiKey);
+  });
 });
 
 describe('buildApiKeyRows', () => {

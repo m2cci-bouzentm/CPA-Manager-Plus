@@ -17,7 +17,8 @@ export const sanitizeApiKeyDisplayText = (value: string, fallback = '') => {
 
 export const buildApiKeyDisplayMap = (
   apiKeys: string[] = [],
-  apiKeyAliases: ApiKeyAlias[] = []
+  apiKeyAliases: ApiKeyAlias[] = [],
+  apiKeyNames: Record<string, string> = {}
 ): Map<string, ApiKeyDisplayInfo> => {
   const map = new Map<string, ApiKeyDisplayInfo>();
   apiKeys.forEach((apiKey) => {
@@ -34,6 +35,17 @@ export const buildApiKeyDisplayMap = (
     map.set(hash, {
       label: alias,
       masked: existing?.masked || existing?.label || formatApiKeyHashLabel(hash),
+      copyValue: existing?.copyValue,
+    });
+  });
+  Object.entries(apiKeyNames).forEach(([apiKeyHash, apiKeyName]) => {
+    const hash = apiKeyHash.toLowerCase();
+    const name = sanitizeApiKeyDisplayText(apiKeyName);
+    if (!name) return;
+    const existing = map.get(hash);
+    map.set(hash, {
+      label: name,
+      masked: existing?.masked || formatApiKeyHashLabel(hash),
       copyValue: existing?.copyValue,
     });
   });

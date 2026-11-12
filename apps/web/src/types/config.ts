@@ -45,6 +45,8 @@ export interface Config {
   forceModelPrefix?: boolean;
   routingStrategy?: string;
   apiKeys?: string[];
+  /** Client key names set on the proxy, keyed by the SHA-256 hex of each key. */
+  apiKeyNames?: Record<string, string>;
   geminiApiKeys?: GeminiKeyConfig[];
   interactionsApiKeys?: GeminiKeyConfig[];
   codexApiKeys?: ProviderKeyConfig[];

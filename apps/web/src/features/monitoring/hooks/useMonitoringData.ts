@@ -492,8 +492,12 @@ export function useMonitoringData({
   }, [channels]);
 
   const apiKeyDisplayMap = useMemo(() => {
-    return buildApiKeyDisplayMap(config?.apiKeys || [], apiKeyAliases || []);
-  }, [apiKeyAliases, config?.apiKeys]);
+    return buildApiKeyDisplayMap(
+      config?.apiKeys || [],
+      apiKeyAliases || [],
+      config?.apiKeyNames || {}
+    );
+  }, [apiKeyAliases, config?.apiKeyNames, config?.apiKeys]);
 
   const analyticsFilters = useMemo(
     () => buildAnalyticsFilters(scopeFilters, authMetaMap, channels),

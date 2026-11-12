@@ -126,8 +126,9 @@ export function useUsageAnalytics() {
   );
   const browserTimeZone = useMemo(() => getBrowserTimeZone(), []);
   const apiKeyDisplayMap = useMemo(
-    () => buildApiKeyDisplayMap(config?.apiKeys || [], apiKeyAliases || []),
-    [apiKeyAliases, config?.apiKeys]
+    () =>
+      buildApiKeyDisplayMap(config?.apiKeys || [], apiKeyAliases || [], config?.apiKeyNames || {}),
+    [apiKeyAliases, config?.apiKeyNames, config?.apiKeys]
   );
   const loadMonitoringMeta = useCallback(async () => {
     const payload = await loadMonitoringMetaPayload(config);
